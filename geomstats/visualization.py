@@ -1,9 +1,10 @@
 """Visualization for Geometric Statistics."""
 
-import geomstats.special_orthogonal_group as special_orthogonal_group
-import geomstats.vectorization as vectorization
 import matplotlib.pyplot as plt
 import numpy as np
+
+import geomstats.special_orthogonal_group as special_orthogonal_group
+import geomstats.vectorization as vectorization
 
 from geomstats.hyperbolic_space import HyperbolicSpace
 from geomstats.hypersphere import Hypersphere
@@ -22,7 +23,9 @@ IMPLEMENTED = ['SO3_GROUP', 'SE3_GROUP', 'S2', 'H2']
 
 
 class Arrow3D():
-    "An arrow in 3d, i.e. a point and a vector."
+    """
+    Class for an arrow in 3D, i.e. a point and a vector.
+    """
     def __init__(self, point, vector):
         self.point = point
         self.vector = vector
@@ -35,7 +38,9 @@ class Arrow3D():
 
 
 class Trihedron():
-    "A trihedron, i.e. 3 Arrow3Ds at the same point."
+    """
+    Class for a trihedron, i.e. 3 Arrow3Ds at the same point.
+    """
     def __init__(self, point, vec_1, vec_2, vec_3):
         self.arrow_1 = Arrow3D(point, vec_1)
         self.arrow_2 = Arrow3D(point, vec_2)
@@ -44,6 +49,7 @@ class Trihedron():
     def draw(self, ax, **arrow_draw_kwargs):
         """
         Draw the trihedron by drawing its 3 Arrow3Ds.
+
         Arrows are drawn is order using green, red, and blue
         to show the trihedron's orientation.
         """
@@ -59,8 +65,9 @@ class Trihedron():
 
 class Sphere():
     """
-    Create the arrays sphere_x, sphere_y, sphere_z of values
+    Class for creating arrays sphere_x, sphere_y, sphere_z of values
     to plot the wireframe of a sphere.
+
     Their shape is (n_meridians, n_circles_latitude).
     """
     def __init__(self, n_meridians=40, n_circles_latitude=None,
@@ -99,8 +106,10 @@ class Sphere():
         ax.scatter(points_x, points_y, points_z, **scatter_kwargs)
 
     def fibonnaci_points(self, n_points=16000):
-        """Spherical Fibonacci point sets yield nearly uniform point
-        distributions on the unit sphere."""
+        """
+        Spherical Fibonacci point sets yield nearly uniform point
+        distributions on the unit sphere.
+        """
 
         x_vals = []
         y_vals = []
@@ -133,7 +142,9 @@ class Sphere():
                      n_points=16000,
                      alpha=0.2,
                      cmap='jet'):
-        """Plot a heatmap defined by a loss on the sphere."""
+        """
+        Plot a heatmap defined by a loss on the sphere.
+        """
         points = self.fibonnaci_points(n_points)
         intensity = np.array([scalar_function(x) for x in points.T])
         ax.scatter(points[0, :], points[1, :], points[2, :],
@@ -144,6 +155,9 @@ class Sphere():
 
 
 class PoincareDisk():
+    """
+    Class for the Poincare disk representing the Hyperbolic space H2.
+    """
     def __init__(self, points=None):
         self.center = np.array([0., 0.])
         self.points = []
@@ -157,6 +171,10 @@ class PoincareDisk():
         self.points.extend(points_list)
 
     def convert_to_disk_coordinates(self, points):
+        """
+        Convert points from extrinsic coordinates to coordinates of
+        the Poincare disk.
+        """
         disk_coords = points[:, 1:] / (1 + points[:, :1])
         return disk_coords
 
@@ -170,8 +188,7 @@ class PoincareDisk():
 
 def convert_to_trihedron(point, space=None):
     """
-    Transform a rigid pointrmation
-    into a trihedron s.t.:
+    Transform a rigid transformation into a trihedron s.t.:
     - the trihedron's base point is the translation of the origin
     of R^3 by the translation part of point,
     - the trihedron's orientation is the rotation of the canonical basis
@@ -213,8 +230,7 @@ def convert_to_trihedron(point, space=None):
 
 def plot(points, ax=None, space=None, **point_draw_kwargs):
     """
-    Plot points in the 3D Special Euclidean Group,
-    by showing them as trihedrons.
+    Plot points in the space given as input.
     """
     if space not in IMPLEMENTED:
         raise NotImplementedError(
