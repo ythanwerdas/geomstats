@@ -11,7 +11,9 @@ from geomstats.manifold import Manifold
 
 
 class ProductManifold(Manifold):
-    """Class for a product of manifolds."""
+    """
+    Class for a product of manifolds.
+    """
 
     def __init__(self, manifolds):
         self.manifolds = manifolds
@@ -21,15 +23,17 @@ class ProductManifold(Manifold):
             dimension=gs.sum(dimensions))
 
     def belongs(self, point):
-        """Check if the point belongs to the manifold."""
+        """
+        Evaluate if a point belongs to the product of manifolds.
+        """
         belong = [self.manifold[i].belongs(point[i])
                   for i in range(self.n_manifolds)]
         return gs.all(belong)
 
     def regularize(self, point):
         """
-        Regularizes the point's coordinates to the canonical representation
-        chosen for this manifold.
+        Regularize a point to the canonical representation
+        chosen for the product of manifolds.
         """
         regularize_points = [self.manifold[i].regularize(point[i])
                              for i in range(self.n_manifolds)]

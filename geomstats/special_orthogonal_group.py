@@ -474,17 +474,17 @@ class SpecialOrthogonalGroup(LieGroup, EmbeddedManifold):
         assert rot_mat.ndim == 3
         return rot_mat
 
-    def compose(self, point_1, point_2):
+    def compose(self, point_a, point_b):
         """
         Compose two elements of SO(n).
         """
-        point_1 = self.regularize(point_1)
-        point_2 = self.regularize(point_2)
+        point_a = self.regularize(point_a)
+        point_b = self.regularize(point_b)
 
-        rot_mat_1 = self.matrix_from_rotation_vector(point_1)
-        rot_mat_2 = self.matrix_from_rotation_vector(point_2)
+        rot_mat_a = self.matrix_from_rotation_vector(point_a)
+        rot_mat_b = self.matrix_from_rotation_vector(point_b)
 
-        rot_mat_prod = gs.einsum('ijk,ikl->ijl', rot_mat_1, rot_mat_2)
+        rot_mat_prod = gs.einsum('ijk,ikl->ijl', rot_mat_a, rot_mat_b)
         point_prod = self.rotation_vector_from_matrix(rot_mat_prod)
 
         point_prod = self.regularize(point_prod)

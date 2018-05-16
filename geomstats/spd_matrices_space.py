@@ -13,7 +13,9 @@ TOLERANCE = 1e-12
 
 
 def is_symmetric(mat, tolerance=TOLERANCE):
-    """Check if a matrix is symmetric."""
+    """
+    Evaluate if a matrix is symmetric.
+    """
     mat = gs.to_ndarray(mat, to_ndim=3)
     n_mats, _, _ = mat.shape
     mat_transpose = gs.transpose(mat, axes=(0, 2, 1))
@@ -25,12 +27,17 @@ def is_symmetric(mat, tolerance=TOLERANCE):
 
 
 def make_symmetric(mat):
-    """Make a matrix fully symmetric to avoid numerical issues."""
+    """
+    Make a matrix fully symmetric to avoid numerical issues.
+    """
     mat = gs.to_ndarray(mat, to_ndim=3)
     return (mat + gs.transpose(mat, axes=(0, 2, 1))) / 2
 
 
 def sqrtm(sym_mat):
+    """
+    Square-root of a symmetric matrix.
+    """
     sym_mat = gs.to_ndarray(sym_mat, to_ndim=3)
 
     [eigenvalues, vectors] = gs.linalg.eigh(sym_mat)
@@ -48,9 +55,8 @@ def sqrtm(sym_mat):
 # Use 'group_exp' and 'group_log'?
 def group_exp(sym_mat):
     """
-    Group exponential of the Lie group of
-    all invertible matrices has a straight-forward
-    computation for symmetric positive definite matrices.
+    The group exponential of the General Linear group has a
+    straight-forward implementation for a SPD matrix.
     """
     sym_mat = gs.to_ndarray(sym_mat, to_ndim=3)
     n_sym_mats, mat_dim, _ = sym_mat.shape
@@ -70,9 +76,8 @@ def group_exp(sym_mat):
 
 def group_log(sym_mat):
     """
-    Group logarithm of the Lie group of
-    all invertible matrices has a straight-forward
-    computation for symmetric positive definite matrices.
+    The group logarithm of the General Linear group has a
+    straight-forward implementation for a SPD matrix.
     """
     sym_mat = gs.to_ndarray(sym_mat, to_ndim=3)
     n_sym_mats, mat_dim, _ = sym_mat.shape
@@ -105,8 +110,7 @@ class SPDMatricesSpace(EmbeddedManifold):
 
     def belongs(self, mat, tolerance=TOLERANCE):
         """
-        Check if a matrix belongs to the manifold of
-        symmetric positive definite matrices.
+        Evaluate if a matrix belongs to the manifold of SPD matrices.
         """
         mat = gs.to_ndarray(mat, to_ndim=3)
         n_mats, mat_dim, _ = mat.shape
@@ -121,8 +125,7 @@ class SPDMatricesSpace(EmbeddedManifold):
 
     def vector_from_symmetric_matrix(self, mat):
         """
-        Convert the symmetric part of a symmetric matrix
-        into a vector.
+        Convert the symmetric part of a symmetric matrix into a vector.
         """
         mat = gs.to_ndarray(mat, to_ndim=3)
         assert gs.all(is_symmetric(mat))
@@ -162,12 +165,19 @@ class SPDMatricesSpace(EmbeddedManifold):
         return mat
 
     def random_uniform(self, n_samples=1):
+        """
+        Sample in the manifold of SPD matrices with the uniform distribution.
+        """
         mat = 2 * gs.random.rand(n_samples, self.n, self.n) - 1
 
         spd_mat = group_exp(mat + gs.transpose(mat, axes=(0, 2, 1)))
         return spd_mat
 
     def random_tangent_vec_uniform(self, n_samples=1, base_point=None):
+        """
+        Sample on a tangent space at a base point with the uniform
+        distribution.
+        """
         if base_point is None:
             base_point = gs.eye(self.n)
 
@@ -199,8 +209,7 @@ class SPDMetric(RiemannianMetric):
 
     def inner_product(self, tangent_vec_a, tangent_vec_b, base_point):
         """
-        Compute the inner product of tangent_vec_a and tangent_vec_b
-        at point base_point using the affine invariant Riemannian metric.
+        Inner product between two tangent vectors at a base point.
         """
         inv_base_point = gs.linalg.inv(base_point)
 
@@ -212,11 +221,7 @@ class SPDMetric(RiemannianMetric):
 
     def exp(self, tangent_vec, base_point):
         """
-        Compute the Riemannian exponential at point base_point
-        of tangent vector tangent_vec wrt the metric
-        defined in inner_product.
-
-        This gives a symmetric positive definite matrix.
+        Riemannian exponential of a tangent vector wrt to a base point.
         """
         tangent_vec = gs.to_ndarray(tangent_vec, to_ndim=3)
         n_tangent_vecs, _, _ = tangent_vec.shape
@@ -245,11 +250,7 @@ class SPDMetric(RiemannianMetric):
 
     def log(self, point, base_point):
         """
-        Compute the Riemannian logarithm at point base_point,
-        of point wrt the metric defined in
-        inner_product.
-
-        This gives a tangent vector at point base_point.
+        Riemannian logarithm of a point wrt a base point.
         """
         point = gs.to_ndarray(point, to_ndim=3)
         n_points, _, _ = point.shape
@@ -275,6 +276,10 @@ class SPDMetric(RiemannianMetric):
         return log
 
     def geodesic(self, initial_point, initial_tangent_vec):
+        """
+        Geodesic curve defined by an initial point and an initial
+        tangent vector.
+        """
         return super(SPDMetric, self).geodesic(
                                       initial_point=initial_point,
                                       initial_tangent_vec=initial_tangent_vec,

@@ -1,5 +1,5 @@
 """
-Class for product of Riemannian metrics.
+Class for a product of Riemannian metrics.
 """
 
 import geomstats.backend as gs
@@ -13,7 +13,7 @@ EPSILON = 1e-5
 
 class ProductRiemannianMetric(RiemannianMetric):
     """
-    Class for product of Riemannian metrics.
+    Class for a product of Riemannian metrics.
     """
 
     def __init__(self, metrics):
@@ -30,8 +30,7 @@ class ProductRiemannianMetric(RiemannianMetric):
 
     def inner_product_matrix(self, base_point=None):
         """
-        Matrix of the inner product defined by the Riemmanian metric
-        at point base_point of the manifold.
+        Inner product matrix at the tangent space at a base point.
         """
         matrix = gs.zeros([self.dimension, self.dimension])
         b = self.dimensions[0]
@@ -50,8 +49,7 @@ class ProductRiemannianMetric(RiemannianMetric):
 
     def inner_product(self, tangent_vec_a, tangent_vec_b, base_point=None):
         """
-        Inner product defined by the Riemannian metric at point base_point
-        between tangent vectors tangent_vec_a and tangent_vec_b.
+        Inner product between two tangent vectors at a base point.
         """
         if base_point is None:
             base_point = [None, ] * self.n_metrics
@@ -65,8 +63,7 @@ class ProductRiemannianMetric(RiemannianMetric):
 
     def exp(self, tangent_vec, base_point=None):
         """
-        Riemannian exponential at point base_point
-        of tangent vector tangent_vec wrt the Riemannian metric.
+        Riemannian exponential of a tangent vector wrt to a base point.
         """
         if base_point is None:
             base_point = [None, ] * self.n_metrics
@@ -78,8 +75,7 @@ class ProductRiemannianMetric(RiemannianMetric):
 
     def log(self, point, base_point=None):
         """
-        Riemannian logarithm at point base_point
-        of tangent vector tangent_vec wrt the Riemannian metric.
+        Riemannian logarithm of a point wrt a base point.
         """
         if base_point is None:
             base_point = [None, ] * self.n_metrics
