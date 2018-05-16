@@ -1,4 +1,6 @@
-"""Class for Lie groups."""
+"""
+Class for Lie groups.
+"""
 
 
 import geomstats.backend as gs
@@ -10,7 +12,9 @@ from geomstats.manifold import Manifold
 
 def loss(y_pred, y_true, group, metric=None):
     """
-    Loss function given by a riemannian metric.
+    Loss function given by a riemannian metric on a Lie group,
+    expressed as the squared geodesic distance between the prediction
+    and the ground truth.
     """
     if metric is None:
         metric = group.left_invariant_metric
@@ -21,8 +25,6 @@ def loss(y_pred, y_true, group, metric=None):
 def grad(y_pred, y_true, group, metric=None):
     """
     Closed-form for the gradient of the loss function.
-
-    :return: tangent vector at point y_pred.
     """
     if metric is None:
         metric = group.left_invariant_metric
@@ -31,7 +33,9 @@ def grad(y_pred, y_true, group, metric=None):
 
 
 class LieGroup(Manifold):
-    """ Class for Lie groups."""
+    """
+    Class for Lie groups.
+    """
 
     def __init__(self, dimension, identity):
         assert dimension > 0
@@ -52,37 +56,35 @@ class LieGroup(Manifold):
 
     def compose(self, point_a, point_b):
         """
-        Composition of the Lie group.
+        Compose two elements of the Lie group.
         """
         raise NotImplementedError('The Lie group composition'
                                   ' is not implemented.')
 
     def inverse(self, point):
         """
-        Inverse law of the Lie group.
+        Compute the group inverse in the Lie group.
         """
         raise NotImplementedError('The Lie group inverse is not implemented.')
 
     def jacobian_translation(self, point, left_or_right='left'):
         """
         Compute the jacobian matrix of the differential
-    of the left translation by the point.
+        of the left/right translations from the identity to point in SE(n).
         """
         raise NotImplementedError(
                'The jacobian of the Lie group translation is not implemented.')
 
     def group_exp_from_identity(self, tangent_vec):
         """
-        Compute the group exponential
-        of tangent vector tangent_vec from the identity.
+        Compute the group exponential of the tangent vector wrt the identity.
         """
         raise NotImplementedError(
                 'The group exponential from the identity is not implemented.')
 
     def group_exp(self, tangent_vec, base_point=None):
         """
-        Compute the group exponential at point base_point
-        of tangent vector tangent_vec.
+        Compute the group exponential of the tangent vector wrt a base point.
         """
         if base_point is None:
             base_point = self.identity
@@ -110,16 +112,14 @@ class LieGroup(Manifold):
 
     def group_log_from_identity(self, point):
         """
-        Compute the group logarithm
-        of the point point from the identity.
+        Compute the group logarithm of the point wrt the identity.
         """
         raise NotImplementedError(
                 'The group logarithm from the identity is not implemented.')
 
     def group_log(self, point, base_point=None):
         """
-        Compute the group logarithm at point base_point
-        of the point point.
+        Compute the group logarithm of the point wrt a base point.
         """
         if base_point is None:
             base_point = self.identity
@@ -144,7 +144,7 @@ class LieGroup(Manifold):
 
     def group_exponential_barycenter(self, points, weights=None):
         """
-        Compute the group exponential barycenter.
+        Compute the group exponential barycenter in the Lie group.
         """
         raise NotImplementedError(
                 'The group exponential barycenter is not implemented.')

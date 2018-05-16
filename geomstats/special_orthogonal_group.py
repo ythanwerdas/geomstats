@@ -579,21 +579,21 @@ class SpecialOrthogonalGroup(LieGroup, EmbeddedManifold):
 
     def group_exp_from_identity(self, tangent_vec):
         """
-        Compute the group exponential of the tangent vector at the identity.
+        Group exponential of a tangent vector wrt the identity.
         """
         tangent_vec = gs.to_ndarray(tangent_vec, to_ndim=2)
         return tangent_vec
 
     def group_log_from_identity(self, point):
         """
-        Compute the group logarithm of the point at the identity.
+        Group logarithm of a point wrt the identity.
         """
         point = self.regularize(point)
         return point
 
     def group_exp(self, tangent_vec, base_point=None):
         """
-        Compute the group exponential of the tangent vector at the base point.
+        Group exponential of a tangent vector wrt a base point.
         """
         base_point = self.regularize(base_point)
         tangent_vec = gs.to_ndarray(tangent_vec, to_ndim=2)
@@ -606,7 +606,7 @@ class SpecialOrthogonalGroup(LieGroup, EmbeddedManifold):
 
     def group_log(self, point, base_point=None):
         """
-        Compute the group logarithm of point point.
+        Group logarithm of a point wrt a base point.
         """
         point = self.regularize(point)
         base_point = self.regularize(base_point)
@@ -619,7 +619,7 @@ class SpecialOrthogonalGroup(LieGroup, EmbeddedManifold):
 
     def group_exponential_barycenter(self, points, weights=None):
         """
-        Compute the group exponential barycenter in SO(n), which is the
+        Group exponential barycenter in SO(n), which is the
         Frechet mean of the canonical bi-invariant metric on SO(n).
         """
         n_points = points.shape[0]

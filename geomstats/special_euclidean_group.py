@@ -103,12 +103,12 @@ class SpecialEuclideanGroup(LieGroup):
 
         return regularized_vec
 
-    def compose(self, point_1, point_2):
+    def compose(self, point_a, point_b):
         """
         Compose two elements of SE(n).
 
         Formula:
-        point_1 . point_2 = [R1 * R2, (R1 * t2) + t1]
+        point_a . point_b = [R1 * R2, (R1 * t2) + t1]
         where:
         R1, R2 are rotation matrices,
         t1, t2 are translation vectors.
@@ -116,42 +116,42 @@ class SpecialEuclideanGroup(LieGroup):
         rotations = self.rotations
         dim_rotations = rotations.dimension
 
-        point_1 = self.regularize(point_1)
-        point_2 = self.regularize(point_2)
+        point_a = self.regularize(point_a)
+        point_b = self.regularize(point_b)
 
-        n_points_1, _ = point_1.shape
-        n_points_2, _ = point_2.shape
+        n_points_a, _ = point_a.shape
+        n_points_b, _ = point_b.shape
 
-        assert (point_1.shape == point_2.shape
-                or n_points_1 == 1
-                or n_points_2 == 1)
+        assert (point_a.shape == point_b.shape
+                or n_points_a == 1
+                or n_points_b == 1)
 
-        rot_vec_1 = point_1[:, :dim_rotations]
-        rot_mat_1 = rotations.matrix_from_rotation_vector(rot_vec_1)
-        rot_mat_1 = so_group.closest_rotation_matrix(rot_mat_1)
+        rot_vec_a = point_a[:, :dim_rotations]
+        rot_mat_a = rotations.matrix_from_rotation_vector(rot_vec_a)
+        rot_mat_a = so_group.closest_rotation_matrix(rot_mat_a)
 
-        rot_vec_2 = point_2[:, :dim_rotations]
-        rot_mat_2 = rotations.matrix_from_rotation_vector(rot_vec_2)
-        rot_mat_2 = so_group.closest_rotation_matrix(rot_mat_2)
+        rot_vec_b = point_b[:, :dim_rotations]
+        rot_mat_b = rotations.matrix_from_rotation_vector(rot_vec_b)
+        rot_mat_b = so_group.closest_rotation_matrix(rot_mat_b)
 
-        translation_1 = point_1[:, dim_rotations:]
-        translation_2 = point_2[:, dim_rotations:]
+        translation_a = point_a[:, dim_rotations:]
+        translation_b = point_b[:, dim_rotations:]
 
-        n_compositions = gs.maximum(n_points_1, n_points_2)
-        composition_rot_mat = gs.matmul(rot_mat_1, rot_mat_2)
+        n_compositions = gs.maximum(n_points_a, n_points_b)
+        composition_rot_mat = gs.matmul(rot_mat_a, rot_mat_b)
         composition_rot_vec = rotations.rotation_vector_from_matrix(
                                                           composition_rot_mat)
         composition_translation = gs.zeros((n_compositions, self.n))
         for i in range(n_compositions):
-            translation_1_i = (translation_1[0] if n_points_1 == 1
-                               else translation_1[i])
-            rot_mat_1_i = (rot_mat_1[0] if n_points_1 == 1
-                           else rot_mat_1[i])
-            translation_2_i = (translation_2[0] if n_points_2 == 1
-                               else translation_2[i])
-            composition_translation[i] = (gs.dot(translation_2_i,
-                                                 gs.transpose(rot_mat_1_i))
-                                          + translation_1_i)
+            translation_a_i = (translation_a[0] if n_points_a == 1
+                               else translation_a[i])
+            rot_mat_a_i = (rot_mat_a[0] if n_points_a == 1
+                           else rot_mat_a[i])
+            translation_b_i = (translation_b[0] if n_points_b == 1
+                               else translation_b[i])
+            composition_translation[i] = (gs.dot(translation_b_i,
+                                                 gs.transpose(rot_mat_a_i))
+                                          + translation_a_i)
 
         composition = gs.zeros((n_compositions, self.dimension))
         composition[:, :dim_rotations] = composition_rot_vec
@@ -236,7 +236,7 @@ class SpecialEuclideanGroup(LieGroup):
 
     def group_exp_from_identity(self, tangent_vec):
         """
-        Compute the group exponential of the tangent vector at the identity.
+        Group exponential of a tangent vector wrt the identity.
         """
         tangent_vec = gs.to_ndarray(tangent_vec, to_ndim=2)
 
@@ -304,7 +304,7 @@ class SpecialEuclideanGroup(LieGroup):
 
     def group_log_from_identity(self, point):
         """
-        Compute the group logarithm of the point at the identity.
+        Group logarithm of a point wrt the identity.
         """
         assert self.belongs(point)
         point = self.regularize(point)
@@ -435,7 +435,7 @@ class SpecialEuclideanGroup(LieGroup):
 
     def group_exponential_barycenter(self, points, weights=None):
         """
-        Compute the group exponential barycenter in SE(n).
+        Group exponential barycenter in SE(n).
         """
 
         n_points = points.shape[0]
