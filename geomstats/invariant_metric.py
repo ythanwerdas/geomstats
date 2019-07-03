@@ -36,7 +36,7 @@ class InvariantMetric(RiemannianMetric):
         n_pos_eigval = gs.sum(gs.cast(mask_pos_eigval, gs.int32))
         mask_neg_eigval = gs.less(eigenvalues, 0.)
         n_neg_eigval = gs.sum(gs.cast(mask_neg_eigval, gs.int32))
-        mask_null_eigval = gs.isclose(eigenvalues, 0.)
+        mask_null_eigval = gs.isclose(eigenvalues, gs.zeros_like(eigenvalues))
         n_null_eigval = gs.sum(gs.cast(mask_null_eigval, gs.int32))
 
         self.group = group

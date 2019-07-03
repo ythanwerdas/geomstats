@@ -42,7 +42,7 @@ class GeneralLinearGroup(LieGroup, MatricesSpace):
         mat = gs.to_ndarray(mat, to_ndim=3)
 
         det = gs.linalg.det(mat)
-        belongs = ~gs.isclose(det, 0.)
+        belongs = ~gs.isclose(det, gs.zeros_like(det))
 
         belongs = gs.to_ndarray(belongs, to_ndim=1)
         belongs = gs.to_ndarray(belongs, to_ndim=2, axis=1)

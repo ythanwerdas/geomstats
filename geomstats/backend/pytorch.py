@@ -111,11 +111,11 @@ def abs(val):
 
 
 def zeros(*args):
-    return torch.from_numpy(np.zeros(*args)).float()
+    return torch.zeros(*args)
 
 
 def ones(*args):
-    return torch.from_numpy(np.ones(*args)).float()
+    return torch.ones(*args)
 
 
 def ones_like(*args, **kwargs):
@@ -205,8 +205,7 @@ def shape(val):
 
 
 def dot(a, b):
-    dot = np.dot(a, b)
-    return torch.from_numpy(np.array(dot)).float()
+    return torch.mm(a, b)
 
 
 def maximum(a, b):
@@ -218,7 +217,7 @@ def greater(a, b):
 
 
 def greater_equal(a, b):
-    return torch.greater_equal(a, b)
+    return torch.ge(a, b)
 
 
 def to_ndarray(x, to_ndim, axis=0):
@@ -242,15 +241,15 @@ def rand(*args, **largs):
 
 
 def isclose(*args, **kwargs):
-    return torch.from_numpy(np.isclose(*args, **kwargs).astype(int)).byte()
+    return torch.isclose(*args, **kwargs)
 
 
 def less(a, b):
-    return torch.le(a, b)
+    return torch.lt(a, b)
 
 
 def less_equal(a, b):
-    return np.less_equal(a, b)
+    return torch.le(a, b)
 
 
 def eye(*args, **kwargs):
