@@ -4,6 +4,9 @@ import numpy as np
 import scipy.linalg
 import torch
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 def sqrtm(x):
     np_sqrtm = np.vectorize(

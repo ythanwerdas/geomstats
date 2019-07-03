@@ -2,6 +2,8 @@
 
 import numpy as np
 import torch
+import warnings
+warnings.simplefilter('ignore', category=ImportWarning)
 
 double = 'torch.DoubleTensor'
 float16 = 'torch.Float'
@@ -19,10 +21,8 @@ def to_bool(x):
 
 
 def real(x):
-    x_np = x.cpu().numpy()
-    x_real = np.real(x_np)
-    x_real = torch.from_numpy(x_real).to(DEVICE)
-    return x_real
+    # Complex tensors not supported in pytorch
+    return x
 
 
 def cond(pred, true_fn, false_fn):
@@ -36,8 +36,8 @@ def amax(x):
 
 
 def boolean_mask(x, mask):
-    idx = np.argwhere(np.asarray(mask))
-    return x[idx]
+    mask = torch.ByteTensor(mask)
+    return x[mask]
 
 
 def arctan2(*args, **kwargs):
