@@ -115,9 +115,9 @@ class SpecialOrthogonalGroup(LieGroup, EmbeddedManifold):
             if self.n == 3:
                 angle = gs.linalg.norm(regularized_point, axis=1)
 
-                mask_0 = gs.isclose(angle, 0.)
+                mask_0 = gs.isclose(angle, gs.zeros_like(angle))
                 mask_not_0 = ~mask_0
-                mask_pi = gs.isclose(angle, gs.pi)
+                mask_pi = gs.isclose(angle, gs.ones_like(angle) * gs.pi)
 
                 # This avoids division by 0.
                 mask_0_float = gs.cast(mask_0, gs.float32) + self.epsilon
@@ -578,7 +578,7 @@ class SpecialOrthogonalGroup(LieGroup, EmbeddedManifold):
             coef_2 = gs.zeros_like(angle)
 
             # This avois dividing by 0.
-            mask_0 = gs.isclose(angle, 0.)
+            mask_0 = gs.isclose(angle, gs.zeros_like(angle))
             mask_0_float = gs.cast(mask_0, gs.float32) + self.epsilon
 
             coef_1 += mask_0_float * (1. - (angle ** 2) / 6.)

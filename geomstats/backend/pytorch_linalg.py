@@ -5,19 +5,34 @@ import scipy.linalg
 import torch
 
 import warnings
-warnings.filterwarnings('ignore')
+warnings.filterwarnings('ignore')  # NOQA
 
 
-def sqrtm(x):
-    np_sqrtm = np.vectorize(
-        scipy.linalg.sqrtm, signature='(n,m)->(n,m)')(x)
-    np_sqrtm = np.real(np_sqrtm)  # HACK ALERT
-    return torch.from_numpy(np_sqrtm)
+def sqrtm(sym_mat):
+    # TODO(nina): This only works for symmetric real matrices.
+    # Need to generalize to all matrices
+    if sym_mat.dim() == 2:
+        sym_mat = torch.unsqueeze(sym_mat, dim=0)
+    assert sym_mat.dim() == 3
+    n_sym_mats, mat_dim, _ = sym_mat.shape
+
+    diag_log = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    log = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    for i in range(n_sym_mats):
+        one_sym_mat = sym_mat[i]
+        one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
+        eigenvalues, vectors = torch.symeig(one_sym_mat)
+        diag_log = torch.diag(torch.log(eigenvalues))
+        log_aux = torch.matmul(diag_log, vectors.t())
+        log[i] = torch.matmul(vectors, log_aux)
+
+    return log
 
 
 def logm(x):
     np_logm = np.vectorize(
         scipy.linalg.logm, signature='(n,m)->(n,m)')(x)
+    np_logm = np.real(np_logm)
     return torch.from_numpy(np_logm).float()
 
 
