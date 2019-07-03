@@ -262,7 +262,7 @@ def average(*args, **kwargs):
 
 
 def matmul(*args, **kwargs):
-    return torch.matmul(*args, **kwargs)
+    return torch.matmul(*args.float(), **kwargs)
 
 
 def sum(x, axis=None, **kwargs):
