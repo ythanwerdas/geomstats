@@ -1,7 +1,6 @@
 """Pytorch based linear algebra backend."""
 
 import numpy as np
-import scipy.linalg
 import torch
 
 import warnings
@@ -21,11 +20,14 @@ def sqrtm(sym_mat):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
         eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
+        print('val and vec devices:')
+        print(eigenvalues.device)
+        print(vectors.device)
         diag_sqrt = torch.diag(torch.sqrt(eigenvalues))
         sqrt_aux = torch.matmul(diag_sqrt, vectors.t())
         sqrt[i] = torch.matmul(vectors, sqrt_aux)
 
-    return sqrt
+    return sqrt.to(sym_mat.device)
 
 
 def logm(sym_mat):
@@ -45,7 +47,7 @@ def logm(sym_mat):
         log_aux = torch.matmul(diag_log, vectors.t())
         log[i] = torch.matmul(vectors, log_aux)
 
-    return log
+    return log.to(sym_mat.device)
 
 
 def expm(sym_mat):
@@ -65,7 +67,7 @@ def expm(sym_mat):
         exp_aux = torch.matmul(diag_exp, vectors.t())
         exp[i] = torch.matmul(vectors, exp_aux)
 
-    return exp
+    return exp.to(sym_mat.device)
 
 
 def inv(*args, **kwargs):
