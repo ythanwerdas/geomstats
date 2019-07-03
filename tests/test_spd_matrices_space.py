@@ -6,7 +6,6 @@ import warnings
 
 import geomstats.backend as gs
 import geomstats.tests
-import torch
 import tests.helper as helper
 
 from geomstats.spd_matrices_space import SPDMatricesSpace
@@ -174,8 +173,6 @@ class TestSPDMatricesSpaceMethods(geomstats.tests.TestCase):
 
         point_1 = self.space.random_uniform(n_samples=1)
         point_2 = self.space.random_uniform(n_samples=1)
-        print(torch.det(point_1[0]))
-        print(torch.det(point_2[0]))
 
         sq_dist_1_2 = self.metric.squared_dist(point_1, point_2)
         sq_dist_2_1 = self.metric.squared_dist(point_2, point_1)

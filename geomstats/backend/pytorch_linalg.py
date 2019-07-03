@@ -16,12 +16,31 @@ def sqrtm(sym_mat):
     assert sym_mat.dim() == 3
     n_sym_mats, mat_dim, _ = sym_mat.shape
 
-    diag_log = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    sqrt = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    for i in range(n_sym_mats):
+        one_sym_mat = sym_mat[i]
+        one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
+        eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
+        diag_sqrt = torch.diag(torch.sqrt(eigenvalues))
+        sqrt_aux = torch.matmul(diag_sqrt, vectors.t())
+        sqrt[i] = torch.matmul(vectors, sqrt_aux)
+
+    return sqrt
+
+
+def logm(sym_mat):
+    # TODO(nina): This only works for symmetric real matrices.
+    # Need to generalize to all matrices
+    if sym_mat.dim() == 2:
+        sym_mat = torch.unsqueeze(sym_mat, dim=0)
+    assert sym_mat.dim() == 3
+    n_sym_mats, mat_dim, _ = sym_mat.shape
+
     log = torch.zeros((n_sym_mats, mat_dim, mat_dim))
     for i in range(n_sym_mats):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
-        eigenvalues, vectors = torch.symeig(one_sym_mat)
+        eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
         diag_log = torch.diag(torch.log(eigenvalues))
         log_aux = torch.matmul(diag_log, vectors.t())
         log[i] = torch.matmul(vectors, log_aux)
@@ -29,17 +48,24 @@ def sqrtm(sym_mat):
     return log
 
 
-def logm(x):
-    np_logm = np.vectorize(
-        scipy.linalg.logm, signature='(n,m)->(n,m)')(x)
-    np_logm = np.real(np_logm)
-    return torch.from_numpy(np_logm).float()
+def expm(sym_mat):
+    # TODO(nina): This only works for symmetric real matrices.
+    # Need to generalize to all matrices
+    if sym_mat.dim() == 2:
+        sym_mat = torch.unsqueeze(sym_mat, dim=0)
+    assert sym_mat.dim() == 3
+    n_sym_mats, mat_dim, _ = sym_mat.shape
 
+    exp = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    for i in range(n_sym_mats):
+        one_sym_mat = sym_mat[i]
+        one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
+        eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
+        diag_exp = torch.diag(torch.exp(eigenvalues))
+        exp_aux = torch.matmul(diag_exp, vectors.t())
+        exp[i] = torch.matmul(vectors, exp_aux)
 
-def expm(x):
-    np_expm = np.vectorize(
-        scipy.linalg.expm, signature='(n,m)->(n,m)')(x)
-    return torch.from_numpy(np_expm)
+    return exp
 
 
 def inv(*args, **kwargs):

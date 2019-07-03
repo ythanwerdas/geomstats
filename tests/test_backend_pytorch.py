@@ -8,10 +8,10 @@ import unittest
 import warnings
 
 import geomstats.backend as gs
-from geomstats.special_orthogonal_group import SpecialOrthogonalGroup
+from geomstats.spd_matrices_space import SPDMatricesSpace
 
 
-class TestBackendNumpy(unittest.TestCase):
+class TestBackendPytorch(unittest.TestCase):
     _multiprocess_can_split_ = True
 
     @classmethod
@@ -28,8 +28,20 @@ class TestBackendNumpy(unittest.TestCase):
     def setUp(self):
         warnings.simplefilter('ignore', category=ImportWarning)
 
-        self.so3_group = SpecialOrthogonalGroup(n=3)
+        self.spd = SPDMatricesSpace(n=3)
         self.n_samples = 2
+
+    def test_sqrtm(self):
+        point = gs.array([[4., 0., 0.],
+                          [0., 9., 0.],
+                          [0., 0., 16.]])
+        result = gs.linalg.sqrtm(point)
+        expected = gs.array(
+            [[2., 0., 0.],
+             [0., 3., 0.],
+             [0., 0., 4.]])
+
+        self.assertTrue(gs.allclose(result, expected))
 
     def test_logm(self):
         point = gs.array([[2., 0., 0.],
@@ -90,8 +102,7 @@ class TestBackendNumpy(unittest.TestCase):
         self.assertTrue(gs.allclose(result, expected))
 
     def test_expm_and_logm_vectorization_random_rotation(self):
-        point = self.so3_group.random_uniform(self.n_samples)
-        point = self.so3_group.matrix_from_rotation_vector(point)
+        point = self.spd.random_uniform(self.n_samples)
 
         result = gs.linalg.expm(gs.linalg.logm(point))
         expected = point
