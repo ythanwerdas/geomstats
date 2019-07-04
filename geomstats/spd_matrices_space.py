@@ -133,14 +133,8 @@ class SPDMetric(RiemannianMetric):
         n_tangent_vecs_a, _, _ = tangent_vec_a.shape
         tangent_vec_b = gs.to_ndarray(tangent_vec_b, to_ndim=3)
         n_tangent_vecs_b, _, _ = tangent_vec_b.shape
-        print('tangent_vec_a')
-        print(tangent_vec_a.device)
-        print('tangent_vec_b')
-        print(tangent_vec_b.device)
 
         base_point = gs.to_ndarray(base_point, to_ndim=3)
-        print('base_point')
-        print(base_point.device)
         n_base_points, _, _ = base_point.shape
 
         assert (n_tangent_vecs_a == n_tangent_vecs_b == n_base_points
@@ -166,31 +160,13 @@ class SPDMetric(RiemannianMetric):
                 base_point,
                 (gs.maximum(n_tangent_vecs_a, n_tangent_vecs_b), 1, 1))
 
-        print('base_point bis')
-        print(base_point.device)
-        print('tangent_vec_abis')
-        print(tangent_vec_a.device)
-        print('tangent_vec_bbis')
-        print(tangent_vec_b.device)
         inv_base_point = gs.linalg.inv(base_point)
-        print('inv_base_point')
-        print(inv_base_point)
 
         aux_a = gs.matmul(inv_base_point, tangent_vec_a)
         aux_b = gs.matmul(inv_base_point, tangent_vec_b)
-        print('aux_a')
-        print(aux_a.device)
-        print('aux_b')
-        print(aux_b.device)
         aux = gs.matmul(aux_a, aux_b)
-        print('aux')
-        print(aux.device)
         inner_product = gs.trace(aux, axis1=1, axis2=2)
-        print('inner_prod')
-        print(inner_product.device)
         inner_product = gs.to_ndarray(inner_product, to_ndim=2, axis=1)
-        print('inner_prod bis')
-        print(inner_product.device)
         return inner_product
 
     def exp(self, tangent_vec, base_point):
@@ -243,10 +219,6 @@ class SPDMetric(RiemannianMetric):
 
         base_point = gs.to_ndarray(base_point, to_ndim=3)
         n_base_points, mat_dim, _ = base_point.shape
-        print('point')
-        print(point.device)
-        print('base_point')
-        print(base_point.device)
 
         assert (n_points == n_base_points
                 or n_points == 1
@@ -259,17 +231,11 @@ class SPDMetric(RiemannianMetric):
 
         sqrt_base_point = gs.zeros((n_base_points,) + (mat_dim,) * 2)
         sqrt_base_point = gs.linalg.sqrtm(base_point)
-        print('sqrt base point')
-        print(sqrt_base_point.device)
 
         inv_sqrt_base_point = gs.linalg.inv(sqrt_base_point)
-        print('inv')
-        print(inv_sqrt_base_point.device)
         point_near_id = gs.matmul(inv_sqrt_base_point, point)
         point_near_id = gs.matmul(point_near_id, inv_sqrt_base_point)
         log_at_id = gs.linalg.logm(point_near_id)
-        print('log_at_id')
-        print(log_at_id.device)
 
         log = gs.matmul(sqrt_base_point, log_at_id)
         log = gs.matmul(log, sqrt_base_point)
