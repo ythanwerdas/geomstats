@@ -20,18 +20,10 @@ def sqrtm(sym_mat):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
         eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
-        print('all devices:')
-        print(eigenvalues.device)
-        print(vectors.device)
         diag_sqrt = torch.diag(torch.sqrt(eigenvalues))
-        print(diag_sqrt.device)
         sqrt_aux = torch.matmul(diag_sqrt, vectors.t())
-        print(sqrt_aux.device)
 
         sqrt[i] = torch.matmul(vectors, sqrt_aux)
-        print(sqrt[i].device)
-
-    print(sqrt.device)
 
     return sqrt.to(sym_mat.device)
 
@@ -76,8 +68,11 @@ def expm(sym_mat):
     return exp.to(sym_mat.device)
 
 
-def inv(*args, **kwargs):
-    return torch.from_numpy(np.linalg.inv(*args, **kwargs))
+def inv(x, **kwargs):
+    inv_x = torch.zeros_like(x).to(x.device)
+    for i, one_x in enumerate(x):
+        inv_x[i] = torch.inverse(x[i])
+    return inv_x
 
 
 def eigvalsh(*args, **kwargs):
