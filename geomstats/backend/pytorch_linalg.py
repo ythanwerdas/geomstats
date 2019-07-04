@@ -20,9 +20,17 @@ def sqrtm(sym_mat):
     sqrt = torch.zeros(
         (n_sym_mats, mat_dim, mat_dim)).to(sym_mat.device)
     for i in range(n_sym_mats):
+        if i > 5:
+            break
         one_sym_mat = sym_mat[i]
+        print('sqrtm one_sym_mat')
+        print(one_sym_mat)
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
         eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
+        print('eigenvalues')
+        print(eigenvalues)
+        print('vectors')
+        print(vectors)
         diag_sqrt = torch.diag(torch.sqrt(eigenvalues))
         sqrt_aux = torch.matmul(diag_sqrt, vectors.t())
 
