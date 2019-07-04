@@ -293,9 +293,14 @@ def zeros_like(*args, **kwargs):
     return torch.zeros_like(*args, **kwargs)
 
 
-def trace(*args, **kwargs):
-    trace = np.trace(*args, **kwargs)
-    return torch.from_numpy(np.array(trace)).float()
+def trace(x, axis1=0, axis2=1):
+    if axis1 == 1 and axis2 == 2:
+        trace = torch.zeros(x.shape[0])
+        for i, one_x in enumerate(x):
+            trace[i] = torch.trace(one_x)
+        return trace
+    else:
+        return torch.trace(x)
 
 
 def mod(*args, **kwargs):
