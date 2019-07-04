@@ -40,6 +40,8 @@ def logm(sym_mat):
     for i in range(n_sym_mats):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
+        print('one_sym_mat')
+        print(one_sym_mat)
         eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
         diag_log = torch.diag(torch.log(eigenvalues))
         log_aux = torch.matmul(diag_log, vectors.t())
