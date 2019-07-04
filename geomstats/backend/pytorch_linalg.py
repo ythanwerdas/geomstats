@@ -14,13 +14,13 @@ def sqrtm(sym_mat):
         sym_mat = torch.unsqueeze(sym_mat, dim=0)
     assert sym_mat.dim() == 3
     n_sym_mats, mat_dim, _ = sym_mat.shape
+    print('sqrtm sym_mat')
+    print(sym_mat)
 
     sqrt = torch.zeros(
         (n_sym_mats, mat_dim, mat_dim)).to(sym_mat.device)
     for i in range(n_sym_mats):
         one_sym_mat = sym_mat[i]
-        print('sqrt one symmat')
-        print(one_sym_mat)
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
         eigenvalues, vectors = torch.symeig(one_sym_mat, eigenvectors=True)
         diag_sqrt = torch.diag(torch.sqrt(eigenvalues))
