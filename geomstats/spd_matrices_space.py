@@ -218,6 +218,10 @@ class SPDMetric(RiemannianMetric):
 
         base_point = gs.to_ndarray(base_point, to_ndim=3)
         n_base_points, mat_dim, _ = base_point.shape
+        print('point')
+        print(point.device)
+        print('base_point')
+        print(base_point.device)
 
         assert (n_points == n_base_points
                 or n_points == 1
@@ -230,11 +234,17 @@ class SPDMetric(RiemannianMetric):
 
         sqrt_base_point = gs.zeros((n_base_points,) + (mat_dim,) * 2)
         sqrt_base_point = gs.linalg.sqrtm(base_point)
+        print('sqrt base point')
+        print(sqrt_base_point.device)
 
         inv_sqrt_base_point = gs.linalg.inv(sqrt_base_point)
+        print('inv')
+        print(inv_sqrt_base_point.device)
         point_near_id = gs.matmul(inv_sqrt_base_point, point)
         point_near_id = gs.matmul(point_near_id, inv_sqrt_base_point)
         log_at_id = gs.linalg.logm(point_near_id)
+        print('log_at_id')
+        print(log_at_id.device)
 
         log = gs.matmul(sqrt_base_point, log_at_id)
         log = gs.matmul(log, sqrt_base_point)
