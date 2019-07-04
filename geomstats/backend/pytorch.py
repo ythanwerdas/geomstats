@@ -117,12 +117,12 @@ def ones(*args):
     return torch.ones(*args)
 
 
-def ones_like(*args, **kwargs):
-    return torch.ones_like(*args, **kwargs)
+def ones_like(x):
+    return torch.ones_like(x).to(x.device)
 
 
-def empty_like(*args, **kwargs):
-    return torch.empty_like(*args, **kwargs)
+def empty_like(x):
+    return torch.empty_like(x).to(x.device)
 
 
 def all(x, axis=None):
@@ -289,8 +289,8 @@ def squeeze(x, axis=None):
     return torch.squeeze(x, dim=axis)
 
 
-def zeros_like(*args, **kwargs):
-    return torch.zeros_like(*args, **kwargs)
+def zeros_like(x):
+    return torch.zeros_like(x).to(x.device)
 
 
 def trace(x, axis1=0, axis2=1):
