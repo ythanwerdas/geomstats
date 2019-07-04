@@ -66,9 +66,15 @@ class RiemannianMetric(object):
         tangent_vec_b = gs.to_ndarray(tangent_vec_b, to_ndim=2)
         n_tangent_vec_a = gs.shape(tangent_vec_a)[0]
         n_tangent_vec_b = gs.shape(tangent_vec_b)[0]
+        print('tangent_vec_a')
+        print(tangent_vec_a.device)
 
         inner_prod_mat = self.inner_product_matrix(base_point)
+        print('inner_prod_mat')
+        print(inner_prod_mat.device)
         inner_prod_mat = gs.to_ndarray(inner_prod_mat, to_ndim=3)
+        print('inner_prod_mat bis')
+        print(inner_prod_mat.device)
         n_mats = gs.shape(inner_prod_mat)[0]
 
         n_inner_prod = gs.maximum(n_tangent_vec_a, n_tangent_vec_b)
@@ -77,6 +83,8 @@ class RiemannianMetric(object):
         n_tiles_a = gs.divide(n_inner_prod, n_tangent_vec_a)
         n_tiles_a = gs.cast(n_tiles_a, gs.int32)
         tangent_vec_a = gs.tile(tangent_vec_a, [n_tiles_a, 1])
+        print('tangent_vec_a post tile')
+        print(tangent_vec_a.device)
 
         n_tiles_b = gs.divide(n_inner_prod, n_tangent_vec_b)
         n_tiles_b = gs.cast(n_tiles_b, gs.int32)
@@ -85,9 +93,15 @@ class RiemannianMetric(object):
         n_tiles_mat = gs.divide(n_inner_prod, n_mats)
         n_tiles_mat = gs.cast(n_tiles_mat, gs.int32)
         inner_prod_mat = gs.tile(inner_prod_mat, [n_tiles_mat, 1, 1])
+        print('inner_prod_mat ter')
+        print(inner_prod_mat.device)
 
         aux = gs.einsum('nj,njk->nk', tangent_vec_a, inner_prod_mat)
+        print('aux')
+        print(aux)
         inner_prod = gs.einsum('nk,nk->n', aux, tangent_vec_b)
+        print('inner_prod')
+        print(inner_prod)
         inner_prod = gs.to_ndarray(inner_prod, to_ndim=2, axis=1)
 
         assert gs.ndim(inner_prod) == 2, inner_prod.shape
