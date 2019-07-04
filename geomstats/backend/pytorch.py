@@ -295,7 +295,7 @@ def zeros_like(x):
 
 def trace(x, axis1=0, axis2=1):
     if axis1 == 1 and axis2 == 2:
-        trace = torch.zeros(x.shape[0])
+        trace = torch.zeros(x.shape[0]).to(x.device)
         for i, one_x in enumerate(x):
             trace[i] = torch.trace(one_x)
         return trace
