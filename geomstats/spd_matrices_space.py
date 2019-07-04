@@ -133,8 +133,14 @@ class SPDMetric(RiemannianMetric):
         n_tangent_vecs_a, _, _ = tangent_vec_a.shape
         tangent_vec_b = gs.to_ndarray(tangent_vec_b, to_ndim=3)
         n_tangent_vecs_b, _, _ = tangent_vec_b.shape
+        print('tangent_vec_a')
+        print(tangent_vec_a.device)
+        print('tangent_vec_b')
+        print(tangent_vec_b.device)
 
         base_point = gs.to_ndarray(base_point, to_ndim=3)
+        print('base_point')
+        print(base_point.device)
         n_base_points, _, _ = base_point.shape
 
         assert (n_tangent_vecs_a == n_tangent_vecs_b == n_base_points
@@ -160,12 +166,28 @@ class SPDMetric(RiemannianMetric):
                 base_point,
                 (gs.maximum(n_tangent_vecs_a, n_tangent_vecs_b), 1, 1))
 
+        print('base_point bis')
+        print(base_point.device)
+        print('tangent_vec_abis')
+        print(tangent_vec_a.device)
+        print('tangent_vec_bbis')
+        print(tangent_vec_b.device)
         inv_base_point = gs.linalg.inv(base_point)
+        print('inv_base_point')
+        print(inv_base_point)
 
         aux_a = gs.matmul(inv_base_point, tangent_vec_a)
         aux_b = gs.matmul(inv_base_point, tangent_vec_b)
+        print('aux_a')
+        print(aux_a.device)
+        print('aux_b')
+        print(aux_b.device)
         inner_product = gs.trace(gs.matmul(aux_a, aux_b), axis1=1, axis2=2)
+        print('inner_prod')
+        print(inner_product.device)
         inner_product = gs.to_ndarray(inner_product, to_ndim=2, axis=1)
+        print('inner_prod bis')
+        print(inner_product.device)
         return inner_product
 
     def exp(self, tangent_vec, base_point):
