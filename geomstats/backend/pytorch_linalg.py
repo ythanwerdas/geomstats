@@ -15,7 +15,8 @@ def sqrtm(sym_mat):
     assert sym_mat.dim() == 3
     n_sym_mats, mat_dim, _ = sym_mat.shape
 
-    sqrt = torch.zeros((n_sym_mats, mat_dim, mat_dim)).to(sym_mat.device)
+    sqrt = torch.zeros(
+        (n_sym_mats, mat_dim, mat_dim)).to(sym_mat.device)
     for i in range(n_sym_mats):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
@@ -35,8 +36,11 @@ def logm(sym_mat):
         sym_mat = torch.unsqueeze(sym_mat, dim=0)
     assert sym_mat.dim() == 3
     n_sym_mats, mat_dim, _ = sym_mat.shape
+    print('sym_mat')
+    print(sym_mat)
 
-    log = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    log = torch.zeros(
+        (n_sym_mats, mat_dim, mat_dim)).to(sym_mat.device)
     for i in range(n_sym_mats):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
@@ -58,7 +62,8 @@ def expm(sym_mat):
     assert sym_mat.dim() == 3
     n_sym_mats, mat_dim, _ = sym_mat.shape
 
-    exp = torch.zeros((n_sym_mats, mat_dim, mat_dim))
+    exp = torch.zeros(
+        (n_sym_mats, mat_dim, mat_dim)).to(sym_mat.device)
     for i in range(n_sym_mats):
         one_sym_mat = sym_mat[i]
         one_sym_mat = 0.5 * (one_sym_mat + one_sym_mat.t())
