@@ -331,6 +331,7 @@ def where(*args, **kwargs):
 
 
 def tile(x, y):
+    y = [int(one_y) for one_y in y]
     return x.repeat(y)
 
 
