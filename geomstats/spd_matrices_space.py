@@ -75,7 +75,8 @@ class SPDMatricesSpace(EmbeddedManifold):
         mat = gs.zeros((n_vecs,) + (mat_dim,) * 2)
 
         lower_triangle_indices = gs.tril_indices(mat_dim)
-        diag_indices = gs.diag_indices(mat_dim)
+        #diag_indices = gs.diag_indices(mat_dim)
+        diag_indices = (gs.arange(mat_dim), gs.arange(mat_dim))
 
         for i_vec in range(n_vecs):
             mat[i_vec, lower_triangle_indices] = 2 * vec[i_vec]
