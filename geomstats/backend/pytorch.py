@@ -16,6 +16,14 @@ CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if CUDA else 'cpu')
 
 
+def tril_indices(*args, **kwargs):
+    return torch.tril_indices(*args, **kwargs)
+
+
+def triu_indices(*args, **kwargs):
+    return torch.triu_indices(*args, **kwargs)
+
+
 def to_bool(x):
     return cast(x, int8)
 
