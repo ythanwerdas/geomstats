@@ -237,7 +237,7 @@ class SPDMetric(RiemannianMetric):
             base_point = gs.tile(base_point, (n_points, 1, 1))
 
         sqrt_base_point = gs.zeros(
-            (n_base_points,) + (mat_dim,) * 2).to(base_point.device)
+            (n_base_points,) + (mat_dim,) * 2)
         #print('sqrt_base_point')
         #print(sqrt_base_point)
         sqrt_base_point = gs.linalg.sqrtm(base_point)
