@@ -110,11 +110,11 @@ def abs(val):
 
 
 def zeros(*args):
-    return torch.zeros(*args)
+    return torch.zeros(*args).to(DEVICE)
 
 
 def ones(*args):
-    return torch.ones(*args)
+    return torch.ones(*args).to(DEVICE)
 
 
 def ones_like(x):

@@ -57,6 +57,9 @@ class SPDMatricesSpace(EmbeddedManifold):
         for i in range(mat_dim):
             for j in range(i + 1):
                 if i == j:
+                    print('vec and mat shape')
+                    print(vec[idx].shape)
+                    print(mat[j, i].shape)
                     vec[idx] = mat[j, j]
                 else:
                     vec[idx] = mat[j, i]
