@@ -16,6 +16,10 @@ CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if CUDA else 'cpu')
 
 
+def arange(*args, **kwargs):
+    return torch.arange(*args, **kwargs)
+
+
 def tril_indices(m, n=None):
     if n is None:
         n = m
