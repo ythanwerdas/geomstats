@@ -58,9 +58,6 @@ class SPDMatricesSpace(EmbeddedManifold):
             for i in range(mat_dim):
                 for j in range(i + 1):
                     if i == j:
-                        print('vec and mat shape')
-                        print(vec[idx].shape)
-                        print(mat[j, i].shape)
                         vec[i_mat, idx] = mat[i_mat, j, j]
                     else:
                         vec[i_mat, idx] = mat[i_mat, j, i]
@@ -73,15 +70,16 @@ class SPDMatricesSpace(EmbeddedManifold):
         Convert a vector into a symmetric matrix.
         """
         vec = gs.to_ndarray(vec, to_ndim=2)
-        _, vec_dim = vec.shape
+        n_vecs, vec_dim = vec.shape
         mat_dim = int((gs.sqrt(8 * vec_dim + 1) - 1) / 2)
-        mat = gs.zeros((mat_dim,) * 2)
+        mat = gs.zeros((n_vecs,) + (mat_dim,) * 2)
 
         lower_triangle_indices = gs.tril_indices(mat_dim)
         diag_indices = gs.diag_indices(mat_dim)
 
-        mat[lower_triangle_indices] = 2 * vec
-        mat[diag_indices] = vec
+        for i_vec in range(n_vecs):
+            mat[i_vec, lower_triangle_indices] = 2 * vec[i_vec]
+            mat[i_vec, diag_indices] = vec[i_vec]
 
         mat = self.embedding_manifold.make_symmetric(mat)
         return mat
