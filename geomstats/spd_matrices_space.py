@@ -49,21 +49,22 @@ class SPDMatricesSpace(EmbeddedManifold):
         assert gs.all(self.embedding_manifold.is_symmetric(mat))
         mat = self.embedding_manifold.make_symmetric(mat)
 
-        _, mat_dim, _ = mat.shape
+        n_mats, mat_dim, _ = mat.shape
         vec_dim = int(mat_dim * (mat_dim + 1) / 2)
-        vec = gs.zeros(vec_dim)
+        vec = gs.zeros((n_mats, vec_dim))
 
         idx = 0
-        for i in range(mat_dim):
-            for j in range(i + 1):
-                if i == j:
-                    print('vec and mat shape')
-                    print(vec[idx].shape)
-                    print(mat[j, i].shape)
-                    vec[idx] = mat[j, j]
-                else:
-                    vec[idx] = mat[j, i]
-                idx += 1
+        for i_mat in range(n_mats):
+            for i in range(mat_dim):
+                for j in range(i + 1):
+                    if i == j:
+                        print('vec and mat shape')
+                        print(vec[idx].shape)
+                        print(mat[j, i].shape)
+                        vec[i_mat, idx] = mat[i_mat, j, j]
+                    else:
+                        vec[i_mat, idx] = mat[i_mat, j, i]
+                    idx += 1
 
         return vec
 
