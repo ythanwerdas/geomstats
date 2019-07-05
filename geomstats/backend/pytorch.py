@@ -19,7 +19,7 @@ DEVICE = torch.device('cuda' if CUDA else 'cpu')
 def tril_indices(m, n=None):
     if n is None:
         n = m
-    return torch.tril_indices((m, n))
+    return torch.tril_indices(m, n)
 
 
 def to_bool(x):
