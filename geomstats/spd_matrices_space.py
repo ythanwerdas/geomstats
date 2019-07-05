@@ -220,9 +220,9 @@ class SPDMetric(RiemannianMetric):
         This gives a tangent vector at point base_point.
         """
         print('point')
-        print(point)
+        print(point.shape)
         print('base_point')
-        print(base_point)
+        print(base_point.shape)
         point = gs.to_ndarray(point, to_ndim=3)
         n_points, _, _ = point.shape
 
@@ -240,8 +240,8 @@ class SPDMetric(RiemannianMetric):
 
         sqrt_base_point = gs.zeros(
             (n_base_points,) + (mat_dim,) * 2)
-        #print('sqrt_base_point')
-        #print(sqrt_base_point)
+        print('sqrt_base_point')
+        print(sqrt_base_point.shape)
         sqrt_base_point = gs.linalg.sqrtm(base_point)
         print('sqrt_base_point')
         print(sqrt_base_point)
