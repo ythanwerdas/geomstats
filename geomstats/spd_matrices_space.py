@@ -53,8 +53,8 @@ class SPDMatricesSpace(EmbeddedManifold):
         vec_dim = int(mat_dim * (mat_dim + 1) / 2)
         vec = gs.zeros((n_mats, vec_dim))
 
-        idx = 0
         for i_mat in range(n_mats):
+            idx = 0
             for i in range(mat_dim):
                 for j in range(i + 1):
                     if i == j:
