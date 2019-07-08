@@ -75,14 +75,13 @@ class SPDMatricesSpace(EmbeddedManifold):
         mat = gs.zeros((n_vecs,) + (mat_dim,) * 2)
 
         lower_triangle_indices = gs.tril_indices(mat_dim)
-        #diag_indices = gs.diag_indices(mat_dim)
-        diag_indices = (gs.arange(mat_dim), gs.arange(mat_dim))
 
         for i_vec in range(n_vecs):
-            for row, col in zip(lower_triangle_indices[0], lower_triangle_indices[1]):
-                 mat[i_vec, row, col] = 2 * vec[i_vec, row*(row+1)/2+col]
+            for row, col in zip(lower_triangle_indices[0],
+                                lower_triangle_indices[1]):
+                mat[i_vec, row, col] = 2 * vec[i_vec, int(row*(row+1)/2+col)]
             for i in range(mat_dim):
-                 mat[i_vec, i, i] = vec[i_vec, i]
+                mat[i_vec, i, i] = vec[i_vec, int(i*(i+1)/2+i)]
 
         mat = self.embedding_manifold.make_symmetric(mat)
         return mat
