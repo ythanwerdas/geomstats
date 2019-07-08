@@ -113,7 +113,7 @@ def det(mat):
         mat = mat.unsqueeze(0)
 
     n_mats, _, _ = mat.shape
-    det_mat = torch.zeros((n_mats, 1))
+    det_mat = torch.zeros((n_mats, 1)).to(mat.device)
     for i in range(n_mats):
         det_mat[i] = mat[i].det()
 
