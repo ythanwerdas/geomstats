@@ -20,10 +20,11 @@ def arange(*args, **kwargs):
     return torch.arange(*args, **kwargs)
 
 
-def tril_indices(m, n=None):
-    if n is None:
-        n = m
-    return torch.tril_indices(m, n)
+def tril_indices(m, n=None, offset=0):
+    return torch.ones(m, n, dtype=torch.uint8).tril(offset).nonzero()
+    #if n is None:
+    #    n = m
+    #return torch.tril_indices(m, n)
 
 
 def to_bool(x):
