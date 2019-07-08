@@ -108,8 +108,16 @@ def svd(*args, **kwargs):
             torch.from_numpy(svds[2]))
 
 
-def det(*args, **kwargs):
-    return torch.from_numpy(np.linalg.det(*args, **kwargs))
+def det(mat):
+    if mat.dim() == 2:
+        mat = mat.unsqueeze(0)
+
+    n_mats, _, _ = mat.shape
+    det_mat = torch.zeros((n_mats, 1))
+    for i in range(n_mats):
+        det_mat[i] = mat[i].det()
+
+    return det_mat
 
 
 def norm(x, ord=2, axis=None, keepdims=False):
