@@ -296,6 +296,10 @@ def cross(*args, **kwargs):
     return np.cross(*args, **kwargs)
 
 
+def tril_indices(*args, **kwargs):
+    return np.tril_indices(*args, **kwargs)
+
+
 def triu_indices(*args, **kwargs):
     return np.triu_indices(*args, **kwargs)
 
