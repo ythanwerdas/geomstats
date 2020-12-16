@@ -109,6 +109,45 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
         return tangent_vec
 
     @staticmethod
+    def power_divided_difference(power, reals):
+        """
+        Compute the n-th divided difference of the power diffeomorphism.
+
+        Parameters
+        ----------
+        power : float
+            Power diffeomorphism.
+        reals : list
+            Arguments of the divided difference.
+
+        Returns
+        -------
+        divided_diff : float
+        """
+        n = len(reals) - 1
+        if n == 0:
+            return reals[0]
+        elif n == 1:
+            a = reals[0]
+            b = reals[1]
+            if a == b:
+                return power * (a**(power - 1))
+            else:
+                return (a**power - b**power) / (a - b)
+        else:
+            sorted_reals = reals
+            a = sorted_reals[0]
+            b = sorted_reals[-1]
+            if a == b:
+                return binomial(power, n) * (a**(power - n))
+            else:
+                first_terms = sorted_reals[:n-1]
+                last_terms = sorted_reals[1:]
+                div_diff_a = power_divided_difference(power, first_terms)
+                div_diff_b = power_divided_difference(power, last_terms)
+                return (div_diff_a - div_diff_b) / (a - b)
+
+    @staticmethod
     @geomstats.vectorization.decorator(['else', 'matrix', 'matrix'])
     def aux_differential_power(power, tangent_vec, base_point):
         """Compute the differential of the matrix power.
