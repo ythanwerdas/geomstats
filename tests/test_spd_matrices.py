@@ -120,6 +120,14 @@ class TestSPDMatrices(geomstats.tests.TestCase):
         result = self.space.logm(v)
         self.assertAllClose(result, expected)
 
+    def test_power_divided_difference(self):
+        power = 4
+        reals = gs.array([1., 1., 1., 2.])
+        expected = 5.
+        result = self.space.power_divided_difference(power, reals)
+
+        self.assertAllClose(result, expected)
+
     def test_differential_power(self):
         """Test of differential_power method."""
         base_point = gs.array([[1., 0., 0.],

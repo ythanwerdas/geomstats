@@ -139,7 +139,8 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
             a = sorted_reals[0]
             b = sorted_reals[-1]
             if a == b:
-                return binomial(power, n) * (a**(power - n))
+                return gs.linalg.binomial_with_float(power, n) *\
+                       (a**(power - n))
             else:
                 first_terms = sorted_reals[:n-1]
                 last_terms = sorted_reals[1:]

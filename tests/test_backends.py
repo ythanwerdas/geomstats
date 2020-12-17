@@ -995,3 +995,11 @@ class TestBackends(geomstats.tests.TestCase):
         result += gs.matmul(solution, spd)
 
         self.assertAllClose(result, skew)
+
+    def test_binomial_with_float(self):
+        x = 5.2
+        n = 3
+        expected = 5.2 * 4.2 * 3.2 / 6.
+        result = gs.linalg.binomial_with_float(x, n)
+
+        self.assertAllClose(result, expected)
