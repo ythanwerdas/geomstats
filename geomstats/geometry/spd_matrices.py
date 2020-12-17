@@ -896,10 +896,8 @@ class SPDMetricLogEuclidean(RiemannianMetric):
             tangent_vec_a, base_point)
         modified_tangent_vec_b = spd_space.differential_log(
             tangent_vec_b, base_point)
-        product = gs.einsum(
-            '...ij,...jk->...ik',
-            modified_tangent_vec_a, modified_tangent_vec_b)
-        inner_product = gs.trace(product, axis1=-2, axis2=-1)
+        inner_product = gs.einsum('...ij,...ij->...', modified_tangent_vec_a,
+                                  modified_tangent_vec_b)
 
         return inner_product
 
@@ -974,3 +972,75 @@ class SPDMetricLogEuclidean(RiemannianMetric):
             return self.exp(t * initial_tangent_vec, initial_point)
 
         return path
+
+
+class SPDMetricMixedPowerEuclidean(RiemannianMetric):
+    """Class for the Log-Euclidean metric on the SPD manifold.
+
+    Parameters
+    ----------
+    n : int
+        Integer representing the shape of the matrices: n x n.
+    power1 : float
+    power2 : float
+    """
+
+    def __init__(self, n, power1, power2):
+        dim = int(n * (n + 1) / 2)
+        super(SPDMetricMixedPowerEuclidean, self).__init__(
+            dim=dim,
+            signature=(dim, 0, 0),
+            default_point_type='matrix')
+        self.n = n
+        self.power1 = power1
+        self.power2 = power2
+        self.space = SPDMatrices(n)
+
+    def inner_product(self, tangent_vec_a, tangent_vec_b, base_point):
+        """Compute the Mixed-Power-Euclidean inner-product.
+
+        Compute the inner-product of tangent_vec_a and tangent_vec_b
+        at point base_point using the mixed-power-Euclidean metric.
+
+        Parameters
+        ----------
+        tangent_vec_a : array-like, shape=[..., n, n]
+            Tangent vector at base point.
+        tangent_vec_b : array-like, shape=[..., n, n]
+            Tangent vector at base point.
+        base_point : array-like, shape=[..., n, n]
+            Base point.
+
+        Returns
+        -------
+        inner_product : array-like, shape=[...,]
+            Inner-product.
+        """
+        spd_space = self.space
+        power1 = self.power1
+        power2 = self.power2
+
+        if power1 == 0 and power2 == 0:
+            return SPDMetricLogEuclidean.inner_product(tangent_vec_a,
+                                                       tangent_vec_b,
+                                                       base_point)
+        elif power1 == 0 or power2 == 0:
+            power = power1 + power2
+            dlog_tangent_vec_a = spd_space.differential_log(tangent_vec_a,
+                                                            base_point)
+            dpow_tangent_vec_b = spd_space.differential_power(power,
+                                                              tangent_vec_b,
+                                                              base_point)
+            inner_product = gs.einsum('...ij,...ij->...', dlog_tangent_vec_a,
+                                      dpow_tangent_vec_b)
+        else:
+            dpow_tangent_vec_a = spd_space.differential_power(power1,
+                                                              tangent_vec_a,
+                                                              base_point)
+            dpow_tangent_vec_b = spd_space.differential_power(power2,
+                                                              tangent_vec_b,
+                                                              base_point)
+            inner_product = gs.einsum('...ij,...ij->...', dpow_tangent_vec_a,
+                                      dpow_tangent_vec_b)
+
+        return inner_product
