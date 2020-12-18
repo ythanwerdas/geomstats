@@ -135,17 +135,19 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
             else:
                 return (a**power - b**power) / (a - b)
         else:
-            sorted_reals = reals
-            a = sorted_reals[0]
-            b = sorted_reals[-1]
+            reals.sort()
+            a = reals[0]
+            b = reals[-1]
             if a == b:
                 return gs.linalg.binomial_with_float(power, n) *\
                        (a**(power - n))
             else:
-                first_terms = sorted_reals[:n-1]
-                last_terms = sorted_reals[1:]
-                div_diff_a = power_divided_difference(power, first_terms)
-                div_diff_b = power_divided_difference(power, last_terms)
+                first_terms = reals[:n]
+                last_terms = reals[1:]
+                div_diff_a = SPDMatrices.power_divided_difference(power,
+                                                                  first_terms)
+                div_diff_b = SPDMatrices.power_divided_difference(power,
+                                                                  last_terms)
                 return (div_diff_a - div_diff_b) / (a - b)
 
     @staticmethod

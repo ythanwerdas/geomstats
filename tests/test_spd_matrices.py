@@ -122,7 +122,7 @@ class TestSPDMatrices(geomstats.tests.TestCase):
 
     def test_power_divided_difference(self):
         power = 4
-        reals = gs.array([1., 1., 1., 2.])
+        reals = [2., 1., 1., 1.]
         expected = 5.
         result = self.space.power_divided_difference(power, reals)
 
