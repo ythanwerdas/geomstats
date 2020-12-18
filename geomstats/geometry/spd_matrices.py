@@ -130,8 +130,15 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
         elif n == 1:
             a = reals[0]
             b = reals[1]
-            if a == b:
-                return power * (a**(power - 1))
+            if abs(a - b) < 1e-3:
+                epsilon = a / b - 1
+                taylor1 = (power - 1) / 2 * epsilon
+                taylor2 = (power - 2) / 3 * epsilon * taylor1
+                taylor3 = (power - 3) / 4 * epsilon * taylor2
+                taylor4 = (power - 4) / 5 * epsilon * taylor3
+                result = power * (b**(power - 1)) *\
+                         (1 + taylor1 + taylor2 + taylor3 + taylor4)
+                return result
             else:
                 return (a**power - b**power) / (a - b)
         else:
