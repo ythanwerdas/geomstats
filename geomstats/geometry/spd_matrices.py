@@ -140,7 +140,7 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
             b = reals[-1]
             if a == b:
                 return gs.linalg.binomial_with_float(power, n) *\
-                       (a**(power - n))
+                (a**(power - n))
             else:
                 first_terms = reals[:n]
                 last_terms = reals[1:]

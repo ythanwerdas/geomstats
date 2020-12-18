@@ -101,4 +101,4 @@ def binomial_with_float(x, n):
     """
     if n < 1:
         raise ValueError('n must be a positive integer.')
-    return x if n == 1 else x / float(n) * binomial_with_float(x-1, n-1)
+    return x if n == 1 else x / float(n) * binomial_with_float(x - 1, n - 1)
