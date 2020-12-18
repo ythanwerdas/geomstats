@@ -84,3 +84,21 @@ def qr(*args, **kwargs):
     tensor_q = torch.from_numpy(matrix_q)
     tensor_r = torch.from_numpy(matrix_r)
     return tensor_q, tensor_r
+
+
+def binomial_with_float(x, n):
+    """
+    Compute x choose n when x is a float.
+
+    Parameters
+    ----------
+    x : float
+    n : int
+
+    Returns
+    -------
+    binomial : float
+    """
+    if n < 1:
+        raise ValueError('n must be a positive integer.')
+    return x if n == 1 else x / float(n) * binomial_with_float(x-1, n-1)

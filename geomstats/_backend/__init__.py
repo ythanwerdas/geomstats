@@ -113,6 +113,7 @@ BACKEND_ATTRIBUTES = {
     ],
     'autograd': ['value_and_grad'],
     'linalg': [
+        'binomial_with_float',
         'det',
         'eig',
         'eigh',

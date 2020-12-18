@@ -63,3 +63,21 @@ def qr(x, mode='reduced'):
 
 def powerm(x, power):
     return expm(power * logm(x))
+
+
+def binomial_with_float(x, n):
+    """
+    Compute x choose n when x is a float.
+
+    Parameters
+    ----------
+    x : float
+    n : int
+
+    Returns
+    -------
+    binomial : float
+    """
+    if n < 1:
+        raise ValueError('n must be a positive integer.')
+    return x if n == 1 else x / float(n) * binomial_with_float(x-1, n-1)
