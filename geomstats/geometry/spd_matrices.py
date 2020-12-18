@@ -1039,3 +1039,97 @@ class SPDMetricMixedPowerEuclidean(RiemannianMetric):
                                       dpow_tangent_vec_b)
 
         return inner_product
+
+    def divergence(self, point_a, point_b):
+        """
+        Compute the canonical divergence of Mixed-Power-Euclidean metrics.
+
+        Compute the canonical divergence from point_a to point_b.
+
+        Parameters
+        ----------
+        point_a : array-like, shape=[..., n, n]
+        point_b : array_like, shape=[..., n, n]
+
+        Returns
+        -------
+        div : array-like, shape=[...]
+        """
+        n = self.n
+        power1 = self.power1
+        power2 = self.power2
+        if power1 == power2 == 0:
+            return SPDMetricLogEuclidean.squared_dist(point_a, point_b) / 2
+        elif power1 == power2:
+            power_point_a = SPDMatrices.powerm(power1, point_a)
+            power_point_b = SPDMatrices.powerm(power2, point_b)
+            diff = power_point_a - power_point_b
+            result = gs.einsum('...ij,...ij->...', diff, diff)
+            return result / 2 / power1 / power2
+        else:
+            eigvals_a, eigvecs_a = gs.linalg.eigh(point_a)
+            eigvals_b, eigvecs_b = gs.linalg.eigh(point_b)
+            transp_eigvecs_a = Matrices.transpose(eigvecs_a)
+            rotation = Matrices.mul(transp_eigvecs_a, eigvecs_b)
+
+        if power1 == 0 or power2 == 0:
+            power = power1 + power2
+
+            log_eigvals_a = gs.log(eigvals_a) - 1 / power
+            power_eigvals_a = eigvals_a**power
+            prod_a = log_eigvals_a * power_eigvals_a
+            term_a = sum(prod_a)
+
+            log_eigvals_b = gs.log(eigvals_b)
+            power_eigvals_b = eigvals_b**power
+            term_b = sum(power_eigvals_b) / power
+
+            pow_eigvals_a_rot = gs.einsum('...i,...ij->...ij', power_eigvals_a,
+                                          rotation)
+            log_eigvals_b_rot = gs.einsum('...i,...ij->...ij', log_eigvals_b,
+                                          rotation)
+            term_ab = gs.einsum('...ij,...ji->...', pow_eigvals_a_rot,
+                                log_eigvals_b_rot)
+
+            result = (term_a + term_b - term_ab) / power
+            return result
+
+        elif power1 + power2 == 0:
+            power = power1
+            sq_power = power1**2
+
+            log_eigvals_a = gs.log(eigvals_a) - 1 / power
+            power_eigvals_a = eigvals_a ** power
+            term_a = (n + power * sum(log_eigvals_a)) / sq_power
+
+            log_eigvals_b = gs.log(eigvals_b)
+            power_eigvals_b = eigvals_b ** power2
+            term_b = sum(log_eigvals_b) / power
+
+            pow_eigvals_a_rot = gs.einsum('...i,...ij->...ij', power_eigvals_a,
+                                          rotation)
+            pow_eigvals_b_rot = gs.einsum('...i,...ij->...ij', power_eigvals_b,
+                                          rotation)
+            term_ab = gs.einsum('...ij,...ji->...', pow_eigvals_a_rot,
+                                pow_eigvals_b_rot)
+
+            result = - term_a + term_b + term_ab / sq_power
+            return result
+
+        else:
+            power = power1 + power2
+            power_eigvals_a = eigvals_a**power
+            term_a = sum(power_eigvals_a) / power2 / power
+            power_eigvals_b = eigvecs_b**power
+            term_b = sum(power_eigvals_b) / power1 / power
+
+            pow1_eigvals_a = eigvals_a**power1
+            pow2_eigvals_b = eigvals_b**power2
+            pow_eigvals_a_rot = gs.einsum('...i,...ij->...ij', pow1_eigvals_a,
+                                          rotation)
+            pow_eigvals_b_rot = gs.einsum('...i,...ij->...ij', pow2_eigvals_b,
+                                          rotation)
+            term_ab = gs.einsum('...ij,...ji->...', pow_eigvals_a_rot,
+                                pow_eigvals_b_rot) / power1 / power2
+            result = term_a + term_b - term_ab
+            return result
