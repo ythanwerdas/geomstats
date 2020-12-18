@@ -179,8 +179,6 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
         n_base_points, _, n = base_point.shape
 
         eigvalues, eigvectors = gs.linalg.eigh(base_point)
-        eigvalues = gs.to_ndarray(eigvalues, to_ndim=3, axis=1)
-        transp_eigvalues = gs.transpose(eigvalues, (0, 2, 1))
 
         if power == 0:
             powered_eigvalues = gs.log(eigvalues)
@@ -188,35 +186,23 @@ class SPDMatrices(SymmetricMatrices, EmbeddedManifold):
             powered_eigvalues = gs.exp(eigvalues)
         else:
             powered_eigvalues = eigvalues**power
-        transp_powered_eigvalues = gs.transpose(powered_eigvalues, (0, 2, 1))
-        ones = gs.ones((n_base_points, 1, n))
-        transp_ones = gs.transpose(ones, (0, 2, 1))
 
-        vertical_index = gs.matmul(transp_eigvalues, ones)
-        horizontal_index = gs.matmul(transp_ones, eigvalues)
-        one_matrix = gs.matmul(transp_ones, ones)
-        vertical_index_power = gs.matmul(transp_powered_eigvalues, ones)
-        horizontal_index_power = gs.matmul(transp_ones, powered_eigvalues)
-        denominator = vertical_index - horizontal_index
-        numerator = vertical_index_power - horizontal_index_power
+        denominator = eigvalues[..., :, None] - eigvalues[..., None, :]
+        numerator = powered_eigvalues[..., :, None] -\
+                    powered_eigvalues[..., None, :]
 
         if power == 0:
-            numerator = gs.where(denominator == 0, one_matrix, numerator)
-            denominator = gs.where(denominator == 0, vertical_index,
-                                   denominator)
+            numerator = gs.where(denominator == 0, 1, numerator)
+            denominator = gs.where(denominator == 0, eigvalues, denominator)
         elif power == math.inf:
-            numerator = gs.where(denominator == 0, vertical_index_power,
-                                 numerator)
-            denominator = gs.where(denominator == 0, one_matrix, denominator)
+            numerator = gs.where(
+                denominator == 0, powered_eigvalues, numerator)
+            denominator = gs.where(denominator == 0, 1, denominator)
         else:
             numerator = gs.where(
-                denominator == 0,
-                power * vertical_index_power,
-                numerator)
+                denominator == 0, power * powered_eigvalues, numerator)
             denominator = gs.where(
-                denominator == 0,
-                vertical_index,
-                denominator)
+                denominator == 0, eigvalues, denominator)
 
         transp_eigvectors = gs.transpose(eigvectors, (0, 2, 1))
         temp_result = gs.matmul(transp_eigvectors, tangent_vec)
